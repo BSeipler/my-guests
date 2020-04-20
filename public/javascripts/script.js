@@ -1,7 +1,7 @@
 const guestTable = document.querySelector('#guests')
 const addNewGuestBtn = document.querySelector('#addNewGuestBtn')
 let deleteGuestBtn
-const url = 'http://localhost:3000/guests'
+const url = 'https://my-guests.herokuapp.com/guests'
 let guests
 const form = document.querySelector('#form')
 let parent
@@ -53,7 +53,7 @@ const createGuest = async () => {
 
     // GET request for most recent document
     const apiCallGET = await axios.get(
-      'http://localhost:3000/guests/recentGuest'
+      'https://my-guests.herokuapp.com/guests/recentGuest'
     )
 
     const oneGuest = apiCallGET.data
@@ -107,7 +107,7 @@ const updateGuest = async event => {
     console.log(event.target)
 
     const apiCall = await axios.get(
-      `http://localhost:3000/guests/${event.target.value}`
+      `https://my-guests.herokuapp.com/guests/${event.target.value}`
     )
 
     const guest = apiCall.data
@@ -166,7 +166,7 @@ const confirmUpdate = async () => {
     const apiCall = await axios(config)
 
     // return the updated record
-    const updated = await axios(`http://localhost:3000/guests/${id}`)
+    const updated = await axios(`https://my-guests.herokuapp.com/guests/${id}`)
 
     const guest = updated.data
 
