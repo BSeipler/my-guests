@@ -1,10 +1,11 @@
 const guestTable = document.querySelector('#guests')
 const addNewGuestBtn = document.querySelector('#addNewGuestBtn')
 let deleteGuestBtn
-const url = 'https://my-guests.herokuapp.com/guests'
+const url = 'https://my-guests.herokuapp.com/'
 let guests
 const form = document.querySelector('#form')
 let parent
+let newGuestForm = document.querySelector('#newGuestForm')
 
 // performs api call to grab all of the guests
 const getGuests = async () => {
@@ -69,7 +70,6 @@ const createGuest = async () => {
     lastname.value = ''
     email.value = ''
     age.value = ''
-
   } catch (error) {
     console.log(error)
   }
@@ -104,14 +104,11 @@ const updateGuest = async event => {
 
     parent = event.target.parentElement.parentElement
 
-    console.log(event.target)
-
     const apiCall = await axios.get(
       `https://my-guests.herokuapp.com/guests/${event.target.value}`
     )
 
     const guest = apiCall.data
-    console.log(guest)
 
     let id = guest._id
     let firstname = guest.firstname
@@ -119,14 +116,9 @@ const updateGuest = async event => {
     let email = guest.email
     let age = guest.age
 
-    const newGuestForm = document.querySelector('#addGuestForm')
+    newGuestForm.remove()
 
-    if (typeof(newGuestForm) != 'undefined' && newGuestForm != null) {
-      newGuestForm.style.display = 'none'
-    }
-    
     form.innerHTML = `<div id="updateForm"><input class="form-control mb-2" type="text" id="updateFirstname" value=${firstname}><input class="form-control mb-2" type="text" id="updateLastname" value=${lastname}><input class="form-control mb-2" type="email" id="updateEmail" value=${email}><input class="form-control mb-2" type="number" id="updateAge" value=${age}><button value="${id}"class="btn-info btn btn-block" id="confirmUpdate">Confirm Update</button></div>`
-
   } catch (error) {
     console.log(error)
   }
@@ -139,10 +131,7 @@ const confirmUpdate = async () => {
       return
     }
 
-    console.log(parent)
-
     // grab the update form values
-
     let updateFirstname = document.querySelector('#updateFirstname').value
     let updateLastname = document.querySelector('#updateLastname').value
     let updateEmail = document.querySelector('#updateEmail').value
@@ -169,14 +158,11 @@ const confirmUpdate = async () => {
 
     const guest = updated.data
 
-    console.log(parent.innerHTML)
-
     // update the table with the updated record
     parent.innerHTML = `<td>${guest.firstname}</td><td>${guest.lastname}</td><td>${guest.email}</td><td>${guest.age}</td><td><button id="updateGuest" class="btn btn-info"value="${guest._id}">Update</button></td><td><button id="deleteGuest" class="btn btn-danger" value="${guest._id}">Delete</button></td>`
 
-    document.querySelector('#updateForm').style.display = 'none'
-    newGuestForm.style.display = 'block'
-
+    form.appendChild(newGuestForm)
+    document.querySelector('#updateForm').remove()
   } catch (error) {
     console.log(error)
   }
