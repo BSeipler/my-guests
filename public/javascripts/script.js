@@ -174,7 +174,7 @@ const confirmUpdate = async () => {
     // update the table with the updated record
     parent.innerHTML = `<td>${guest.firstname}</td><td>${guest.lastname}</td><td>${guest.email}</td><td>${guest.age}</td><td><button id="updateGuest" class="btn btn-info"value="${guest._id}">Update</button></td><td><button id="deleteGuest" class="btn btn-danger" value="${guest._id}">Delete</button></td>`
 
-    updateForm.style.display = 'none'
+    document.querySelector('#updateForm').style.display = 'none'
     newGuestForm.style.display = 'block'
 
   } catch (error) {
