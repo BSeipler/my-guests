@@ -125,8 +125,7 @@ const updateGuest = async event => {
       newGuestForm.style.display = 'none'
     }
     
-
-    form.innerHTML = `<input class="form-control mb-2" type="text" id="updateFirstname" value=${firstname}><input class="form-control mb-2" type="text" id="updateLastname" value=${lastname}><input class="form-control mb-2" type="email" id="updateEmail" value=${email}><input class="form-control mb-2" type="number" id="updateAge" value=${age}><button value="${id}"class="btn-info btn btn-block" id="confirmUpdate">Confirm Update</button>`
+    form.innerHTML = `<div id="updateForm"><input class="form-control mb-2" type="text" id="updateFirstname" value=${firstname}><input class="form-control mb-2" type="text" id="updateLastname" value=${lastname}><input class="form-control mb-2" type="email" id="updateEmail" value=${email}><input class="form-control mb-2" type="number" id="updateAge" value=${age}><button value="${id}"class="btn-info btn btn-block" id="confirmUpdate">Confirm Update</button></div>`
 
   } catch (error) {
     console.log(error)
@@ -174,6 +173,10 @@ const confirmUpdate = async () => {
 
     // update the table with the updated record
     parent.innerHTML = `<td>${guest.firstname}</td><td>${guest.lastname}</td><td>${guest.email}</td><td>${guest.age}</td><td><button id="updateGuest" class="btn btn-info"value="${guest._id}">Update</button></td><td><button id="deleteGuest" class="btn btn-danger" value="${guest._id}">Delete</button></td>`
+
+    updateForm.style.display = 'none'
+    newGuestForm.style.display = 'block'
+
   } catch (error) {
     console.log(error)
   }
