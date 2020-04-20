@@ -1,7 +1,7 @@
 const guestTable = document.querySelector('#guests')
 const addNewGuestBtn = document.querySelector('#addNewGuestBtn')
 let deleteGuestBtn
-const url = 'https://my-guests.herokuapp.com/'
+const url = 'https://my-guests.herokuapp.com/guests'
 let guests
 const form = document.querySelector('#form')
 let parent
