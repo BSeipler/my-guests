@@ -28,7 +28,15 @@ const createGuest = async (req, res, next) => {
 
 const updateGuest = async (req, res, next) => {
   try {
-    const guest = await Guest.findOne({ id: req.body.id })
+    const guest = await Guest.updateOne(
+      { _id: req.body.id },
+      {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
+        age: req.body.age
+      }
+    )
     res.send(guest)
   } catch (error) {
     console.log(error)

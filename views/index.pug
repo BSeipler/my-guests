@@ -1,31 +1,31 @@
 extends layout
 
 block content
-  div(class="container-fluid")
+  header(class="container-fluid")
     div(class="row")
       div(class="col text-center")
         h1 My Guests
-
-  div(class="container-fluid")
-    div(class="row")
-      div(class="col-xl-3" id="form")
-        div(id="newGuestForm")
-          input(class="form-control mb-2" type="text" placeholder="Firstname" id="firstname")
-          input(class="form-control mb-2" type="text" placeholder="Lastname" id="lastname")
-          input(class="form-control mb-2" type="text" placeholder="Email" id="email")
-          input(class="form-control mb-2" type="number" placeholder="Age" id="age")
-          button(class="btn-primary btn btn-block" id="addNewGuestBtn") Add New Guest
-      div(class="col")
-        table(class="table table-bordered table-striped text-center")
-          thead
-            tr
-              th Firstname
-              th Lastname
-              th Email
-              th Age
-              th Update
-              th Delete
-          tbody(id="guests")
+  main
+    section(class="container-fluid")
+      div(class="row")
+        div(class="col-xl-3" id="form")
+          div(id="newGuestForm")
+            input(class="form-control mb-2" type="text" placeholder="Firstname" id="firstname")
+            input(class="form-control mb-2" type="text" placeholder="Lastname" id="lastname")
+            input(class="form-control mb-2" type="text" placeholder="Email" id="email")
+            input(class="form-control mb-2" type="number" placeholder="Age" id="age")
+            button(class="btn-primary btn btn-block" id="addNewGuestBtn") Add New Guest
+        div(class="col")
+          table(class="table table-bordered table-striped text-center")
+            thead
+              tr
+                th Firstname
+                th Lastname
+                th Email
+                th Age
+                th Update
+                th Delete
+            tbody(id="guests")
   
 
   

@@ -4,6 +4,7 @@ let deleteGuestBtn
 const url = 'http://localhost:3000/guests'
 let guests
 const form = document.querySelector('#form')
+let parent
 
 // performs api call to grab all of the guests
 const getGuests = async () => {
@@ -11,7 +12,10 @@ const getGuests = async () => {
     const apiCall = await axios.get(url)
     guests = apiCall.data
     for (let guest of guests) {
-      guestTable.innerHTML += `<tr id="${guest.id}"><td>${guest.firstname}</td><td>${guest.lastname}</td><td>${guest.email}</td><td>${guest.age}</td><td><button id="updateGuest" class="btn btn-info"value="${guest._id}">Update</button></td><td><button id="deleteGuest" class="btn btn-danger" value="${guest._id}">Delete</button></td></tr>`
+      const newRows = document.createElement('tr')
+      newRows.id = `${guest._id}`
+      guestTable.appendChild(newRows)
+      newRows.innerHTML = `<td>${guest.firstname}</td><td>${guest.lastname}</td><td>${guest.email}</td><td>${guest.age}</td><td><button id="updateGuest" class="btn btn-info"value="${guest._id}">Update</button></td><td><button id="deleteGuest" class="btn btn-danger" value="${guest._id}">Delete</button></td>`
     }
     deleteGuestBtn = document.querySelector('#deleteGuest')
   } catch (error) {
@@ -26,20 +30,20 @@ window.onload = event => {
 const createGuest = async () => {
   try {
     // grab input values
-    let firstname = document.querySelector('#firstname').value
-    let lastname = document.querySelector('#lastname').value
-    let email = document.querySelector('#email').value
-    let age = document.querySelector('#age').value
+    let firstname = document.querySelector('#firstname')
+    let lastname = document.querySelector('#lastname')
+    let email = document.querySelector('#email')
+    let age = document.querySelector('#age')
 
     // data to be sent with the post request
     const config = {
       method: 'post',
       url: url,
       data: {
-        firstname: firstname,
-        lastname: lastname,
-        email: email,
-        age: age,
+        firstname: firstname.value,
+        lastname: lastname.value,
+        email: email.value,
+        age: age.value,
         date: new Date()
       }
     }
@@ -54,7 +58,18 @@ const createGuest = async () => {
 
     const oneGuest = apiCallGET.data
 
-    guestTable.innerHTML += `<tr><td>${oneGuest.firstname}</td><td>${oneGuest.lastname}</td><td>${oneGuest.email}</td><td>${oneGuest.age}</td><td><button value="${oneGuest._id}">Update</button><button value="${oneGuest._id}">Delete</button></td></tr>`
+    // add the most recent document to the table
+    const newRows = document.createElement('tr')
+    newRows.id = `${oneGuest._id}`
+    guestTable.appendChild(newRows)
+    newRows.innerHTML = `<td>${oneGuest.firstname}</td><td>${oneGuest.lastname}</td><td>${oneGuest.email}</td><td>${oneGuest.age}</td><td><button id="updateGuest" class="btn btn-info"value="${oneGuest._id}">Update</button></td><td><button id="deleteGuest" class="btn btn-danger" value="${oneGuest._id}">Delete</button></td>`
+
+    // reset the inputs back to blank
+    firstname.value = ''
+    lastname.value = ''
+    email.value = ''
+    age.value = ''
+
   } catch (error) {
     console.log(error)
   }
@@ -80,13 +95,17 @@ const deleteGuest = async event => {
   }
 }
 
-// get the specific guest data from the database
+// get the specific guest data from the database and insert it into an update form
 const updateGuest = async event => {
   try {
     if (!event.target.matches('#updateGuest')) {
       return
     }
-    console.log(event.target.value)
+
+    parent = event.target.parentElement.parentElement
+
+    console.log(event.target)
+
     const apiCall = await axios.get(
       `http://localhost:3000/guests/${event.target.value}`
     )
@@ -94,14 +113,21 @@ const updateGuest = async event => {
     const guest = apiCall.data
     console.log(guest)
 
+    let id = guest._id
     let firstname = guest.firstname
     let lastname = guest.lastname
     let email = guest.email
     let age = guest.age
 
-    document.querySelector('#newGuestForm').style.display = 'none'
+    const newGuestForm = document.querySelector('#addGuestForm')
 
-    form.innerHTML = `<input class="form-control mb-2" type="text" id="updateFirstname" value=${firstname}><input class="form-control mb-2" type="text" id="updateLastname" value=${lastname}><input class="form-control mb-2" type="email" id="updateEmail" value=${email}><input class="form-control mb-2" type="number" id="updateAge" value=${age}><button class="btn-info btn btn-block" id="confirmUpdate">Confirm Update</button>`
+    if (typeof(newGuestForm) != 'undefined' && newGuestForm != null) {
+      newGuestForm.style.display = 'none'
+    }
+    
+
+    form.innerHTML = `<input class="form-control mb-2" type="text" id="updateFirstname" value=${firstname}><input class="form-control mb-2" type="text" id="updateLastname" value=${lastname}><input class="form-control mb-2" type="email" id="updateEmail" value=${email}><input class="form-control mb-2" type="number" id="updateAge" value=${age}><button value="${id}"class="btn-info btn btn-block" id="confirmUpdate">Confirm Update</button>`
+
   } catch (error) {
     console.log(error)
   }
@@ -113,8 +139,41 @@ const confirmUpdate = async () => {
     if (!event.target.matches('#confirmUpdate')) {
       return
     }
-    let updateFirstname = document.querySelector('#updateFirstname')
-    console.log(updateFirstname.value)
+
+    console.log(parent)
+
+    // grab the update form values
+
+    let updateFirstname = document.querySelector('#updateFirstname').value
+    let updateLastname = document.querySelector('#updateLastname').value
+    let updateEmail = document.querySelector('#updateEmail').value
+    let updateAge = document.querySelector('#updateAge').value
+    let id = document.querySelector('#confirmUpdate').value
+
+    // send patch request to update guest in DB
+    const config = {
+      method: 'patch',
+      url: url,
+      data: {
+        id: id,
+        firstname: updateFirstname,
+        lastname: updateLastname,
+        email: updateEmail,
+        age: updateAge
+      }
+    }
+
+    const apiCall = await axios(config)
+
+    // return the updated record
+    const updated = await axios(`http://localhost:3000/guests/${id}`)
+
+    const guest = updated.data
+
+    console.log(parent.innerHTML)
+
+    // update the table with the updated record
+    parent.innerHTML = `<td>${guest.firstname}</td><td>${guest.lastname}</td><td>${guest.email}</td><td>${guest.age}</td><td><button id="updateGuest" class="btn btn-info"value="${guest._id}">Update</button></td><td><button id="deleteGuest" class="btn btn-danger" value="${guest._id}">Delete</button></td>`
   } catch (error) {
     console.log(error)
   }
